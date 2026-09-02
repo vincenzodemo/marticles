@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titolo dell'Articolo</title>
+
+    <!-- Font STIX Two Text (ottimale per la coerenza con LaTeX) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Configurazione e caricamento MathJax 3 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                ignoreHtmlClass: 'no-mathjax',
+                processHtmlClass: 'mathjax'
+            },
+            startup: {
+                pageReady: function () {
+                    return MathJax.startup.defaultPageReady().then(function () {
+                        document.body.classList.remove('math-loading');
+                    });
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #fcfcfc;
+            --text-color: #1e2024;
+            --text-muted: #5b626e;
+            --accent-color: #1d3557;
+            --accent-border: #457b9d;
+            --card-bg: #f4f6f8;
+            --border-color: #e2e5ea;
+            --code-bg: #e9ecef;
+            --font-main: "STIX Two Text", "Times New Roman", Times, serif;
+            --font-mono: "JetBrains Mono", monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121418;
+            --text-color: #e4e7eb;
+            --text-muted: #9aa1ac;
+            --accent-color: #8da9c4;
+            --accent-border: #52796f;
+            --card-bg: #1a1d24;
+            --border-color: #272c35;
+            --code-bg: #222630;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            font-size: 1.18rem;
+            line-height: 1.7;
+            padding: 2.5rem 1.25rem;
+            transition: background-color 0.25s ease, color 0.25s ease;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nasconde le equazioni durante il caricamento per evitare sfarfallii (Bug 5) */
+        body.math-loading .math-block {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        /* Barra superiore */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .date-display {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            /* Aggiunta la transizione sul colore del testo (Bug 7) */
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Effetto hover solo per dispositivi dotati di cursore (Bug 4) */
+        @media (hover: hover) and (pointer: fine) {
+            .theme-toggle-btn:hover {
+                background-color: var(--card-bg);
+                border-color: var(--text-muted);
+            }
+        }
+
+        /* Tipografia Articolo */
+        header.article-header {
+            margin-bottom: 2.5rem;
+        }
+
+        h1.article-title {
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1.25;
+            color: var(--text-color);
+            margin-bottom: 0.8rem;
+        }
+
+        h2.section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3rem;
+        }
+
+        p {
+            margin-bottom: 1.3rem;
+            text-align: justify;
+        }
+
+        /* Applicazione delle variabili orfane per blocchi di codice (Bug 2) */
+        code, pre {
+            font-family: var(--font-mono);
+            background-color: var(--code-bg);
+            padding: 0.15rem 0.3rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background-color 0.25s ease;
+        }
+
+        /* Blocchi Matematici e Box */
+        .math-block {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            padding: 0.5rem 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .theorem-box {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--accent-border);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .theorem-box strong {
+            color: var(--text-color);
+            display: inline-block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Sezione Riferimenti Bibliografici */
+        .references {
+            margin-top: 3.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .references h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .references ol {
+            padding-left: 1.2rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .references li {
+            margin-bottom: 0.5rem;
+        }
+
+        .references a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .references a:hover {
+            text-decoration: underline;
+        }
+
+        /* Adattamento schermi piccoli */
+        @media (max-width: 600px) {
+            body {
+                font-size: 1.08rem;
+                padding: 1.5rem 1rem;
+            }
+
+            h1.article-title {
+                font-size: 1.9rem;
+            }
+
+            h2.section-title {
+                font-size: 1.35rem;
+            }
+
+            p {
+                text-align: left;
+            }
+        }
+
+        @media print {
+            .theme-toggle-btn {
+                display: none;
+            }
+            body {
+                background: #fff;
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body class="math-loading">
+
+    <div class="container">
+        <!-- Barra superiore: data e dark mode -->
+        <div class="top-bar">
+            <time class="date-display" datetime="2026-08-31">31 agosto 2026</time>
+            <!-- Aggiunti attributi aria-hidden per gli screen reader (Bug 3) -->
+            <button class="theme-toggle-btn" id="theme-toggle" aria-label="Cambia tema">
+                <span id="theme-icon" aria-hidden="true">🌙</span>
+                <span id="theme-text" aria-hidden="true">Scuro</span>
+            </button>
+        </div>
+
+        <!-- Intestazione principale -->
+        <header class="article-header">
+            <h1 class="article-title">Soluzione dell'Equazione di Laplace nel Semipiano</h1>
+        </header>
+
+        <!-- Corpo dell'articolo -->
+        <main>
+            <p>
+                Consideriamo il problema al contorno di Dirichlet per l'equazione di Laplace nel semipiano superiore $\mathbb{R}^2_+ = \{ (x, y) \in \mathbb{R}^2 : y > 0 \}$. Cerchiamo una funzione armonica $u(x, y)$ tale che:
+            </p>
+
+            <div class="math-block">
+                <!-- Sostituito il simbolo & con l'entità &amp; per la validazione HTML (Bug 1) -->
+                $$\begin{cases}
+                \Delta u = \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0 &amp; \text{per } y > 0 \\
+                u(x, 0) = f(x) &amp; \text{per } x \in \mathbb{R}
+                \end{cases}$$
+            </div>
+
+            <div class="theorem-box">
+                <strong>Teorema (Nucleo di Poisson).</strong> Se la funzione $f \in L^1(\mathbb{R})$ è continua e limitata, l'unica soluzione limitata è data dalla convoluzione di $f$ con il nucleo di Poisson $P_y(x)$:
+                <div class="math-block">
+                    $$u(x, y) = (f * P_y)(x) = \frac{1}{\pi} \int_{-\infty}^{+\infty} \frac{y}{(x - \xi)^2 + y^2} f(\xi) \, d\xi$$
+                </div>
+            </div>
+
+            <!-- Sezione facoltativa -->
+            <h2 class="section-title">Dimostrazione tramite Trasformata di Fourier</h2>
+
+            <p>
+                Applicando la trasformata di Fourier rispetto alla variabile spaziale $x$, definiamo $\hat{u}(\xi, y) = \mathcal{F}_x[u(x, y)](\xi)$. L'equazione differenziale alle derivate parziali si trasforma in un'equazione differenziale ordinaria del secondo ordine:
+            </p>
+
+            <div class="math-block">
+                $$\frac{d^2 \hat{u}}{d y^2}(\xi, y) - 4\pi^2 \xi^2 \hat{u}(\xi, y) = 0$$
+            </div>
+
+            <p>
+                Imponendo la condizione di limitatezza per $y \to +\infty$, scartiamo l'esponenziale divergente ottenendo $\hat{u}(\xi, y) = \hat{f}(\xi) e^{-2\pi |\xi| y}$. L'antitrasformata restituisce direttamente il nucleo desiderato. Il termine $e^{-2\pi |\xi| y}$ garantisce la convergenza dell'integrale.
+            </p>
+
+            <!-- Sezione Riferimenti Bibliografici -->
+            <section class="references">
+                <h3>Riferimenti bibliografici</h3>
+                <ol>
+                    <li>
+                        L. C. Evans, <em>Partial Differential Equations</em>, Graduate Studies in Mathematics, Vol. 19, AMS, 2010.
+                    </li>
+                    <li>
+                        E. M. Stein, R. Shakarchi, <em>Fourier Analysis: An Introduction</em>, Princeton University Press, 2003.
+                    </li>
+                </ol>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script gestione Dark Mode con cattura eccezioni (Bug 6) -->
+    <script>
+        const root = document.documentElement;
+        const toggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        const storageKey = 'math_article_theme';
+
+        function applyTheme(theme) {
+            root.setAttribute('data-theme', theme);
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Chiaro';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Scuro';
+            }
+        }
+
+        let savedTheme = null;
+        try {
+            savedTheme = localStorage.getItem(storageKey);
+        } catch (error) {
+            console.warn('Accesso al localStorage negato dalle impostazioni di privacy del browser.');
+        }
+
+        if (savedTheme === 'dark') {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            const currentTheme = root.getAttribute('data-theme');
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+            
+            try {
+                localStorage.setItem(storageKey, nextTheme);
+            } catch (error) {
+                console.warn('Impossibile salvare la preferenza del tema nel localStorage.');
+            }
+        });
+    </script>
+</body>
+</html>
